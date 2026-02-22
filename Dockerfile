@@ -1,5 +1,7 @@
 FROM python:3.12-slim
 
+LABEL maintainer="mik.shrestha22@gmail.com"
+
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 

@@ -1,0 +1,29 @@
+from django.shortcuts import get_object_or_404, render
+from credentials.models import Credential
+from core.security import verify_signature
+import hashlib
+
+
+def verify_credential(request, credential_id):
+
+    credential = get_object_or_404(Credential, credential_id=credential_id)
+
+    # Recalculate hash
+    data_string = f"{credential.student.username}{credential.degree_name}{credential.field_of_study}{credential.issue_date}{credential.grade}"
+    new_hash = hashlib.sha256(data_string.encode()).hexdigest()
+
+    integrity_valid = (new_hash == credential.hash_value)
+
+    signature_valid = verify_signature(
+        credential.hash_value,
+        credential.digital_signature
+    )
+
+    context = {
+        'credential': credential,
+        'integrity_valid': integrity_valid,
+        'signature_valid': signature_valid,
+        'revoked': credential.is_revoked
+    }
+
+    return render(request, 'verification/result.html', context)
