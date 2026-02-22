@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h2>Verification Result</h2>
+
+<p><strong>Status:</strong> {{ status }}</p>
+
+<p><strong>Student:</strong> {{ credential.student.username }}</p>
+<p><strong>Degree:</strong> {{ credential.degree_name }}</p>
+<p><strong>Field:</strong> {{ credential.field_of_study }}</p>
+<p><strong>Grade:</strong> {{ credential.grade }}</p>
+<p><strong>Issue Date:</strong> {{ credential.issue_date }}</p>
+
+{% if credential.qr_code %}
+    <h3>QR Code:</h3>
+    <img src="{{ credential.qr_code.url }}" width="200">
+{% endif %}
+
+{% endblock %}

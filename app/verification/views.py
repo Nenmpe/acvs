@@ -13,17 +13,22 @@ def verify_credential(request, credential_id):
     new_hash = hashlib.sha256(data_string.encode()).hexdigest()
 
     integrity_valid = (new_hash == credential.hash_value)
-
+    
     signature_valid = verify_signature(
         credential.hash_value,
         credential.digital_signature
     )
 
+    if credential.is_revoked:
+        status = "REVOKED"
+    elif not integrity_valid or not signature_valid:
+        status = "TAMPERED"
+    else:
+        status = "VALID"
+
     context = {
         'credential': credential,
-        'integrity_valid': integrity_valid,
-        'signature_valid': signature_valid,
-        'revoked': credential.is_revoked
+        'status': status
     }
 
     return render(request, 'verification/result.html', context)

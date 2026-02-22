@@ -10,13 +10,13 @@ from .forms import CredentialForm
 def issue_credential(request):
 
     if request.method == 'POST':
-        form = CredentialForm(request.POST)
+        form = CredentialForm(request.POST, university=request.user.university)
         if form.is_valid():
             credential = form.save(commit=False)
             credential.university = request.user.university
             credential.save()
             return redirect('dashboard')
     else:
-        form = CredentialForm()
+        form = CredentialForm(university=request.user.university)
 
     return render(request, 'credentials/issue.html', {'form': form})

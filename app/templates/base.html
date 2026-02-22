@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>ACVS</title>
+</head>
+<body>
+
+    <h1>Academic Credential Verification System</h1>
+
+    <hr>
+
+    {% if user.is_authenticated %}
+        Logged in as: {{ user.username }} |
+        <a href="/admin/">Admin</a> |
+        <a href="/accounts/create-student/">Create Student</a> |
+        <a href="/credentials/issue-credential/">Issue Credential</a>
+        <hr>
+    {% endif %}
+
+    {% block content %}
+    {% endblock %}
+
+</body>
+</html>
