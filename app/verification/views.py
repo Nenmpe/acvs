@@ -2,6 +2,7 @@ from django.shortcuts import get_object_or_404, render
 from credentials.models import Credential
 from core.security import verify_signature
 import hashlib
+from accounts.models import AuditLog
 
 
 def verify_credential(request, credential_id):
@@ -25,10 +26,18 @@ def verify_credential(request, credential_id):
         status = "TAMPERED"
     else:
         status = "VALID"
-
+    
+    
     context = {
         'credential': credential,
         'status': status
     }
+    
+    AuditLog.objects.create(
+        user=None,
+        action='VERIFY_CREDENTIAL',
+        credential_id=credential.id,
+        description=f"Verification attempt. Result: {status}"
+    )
 
     return render(request, 'verification/result.html', context)
