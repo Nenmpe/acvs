@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h2>My Certificates</h2>
+
+{% if credentials %}
+    <ul>
+        {% for credential in credentials %}
+            <li>
+                {{ credential.degree_name }} -
+                {{ credential.issue_date }}
+
+                {% if credential.pdf_file %}
+                    <a href="{% url 'credentials:download_certificate' credential.id %}">
+                        Download PDF
+                    </a>
+                {% endif %}
+            </li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>No certificates available.</p>
+{% endif %}
+
+{% endblock %}

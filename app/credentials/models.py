@@ -41,6 +41,12 @@ class Credential(models.Model):
 
     is_revoked = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
+    
+    pdf_file = models.FileField(
+        upload_to="certificates/",
+        null=True,
+        blank=True
+    )
 
 
     def generate_qr(self):

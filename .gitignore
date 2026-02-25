@@ -1,5 +1,8 @@
 .env
 
+# For Not Uploading The Generated PDF and QR images
+app/media/*
+
 # # Ignore Django migration files
 # **/migrations/*.py
 # **/migrations/*.pyc

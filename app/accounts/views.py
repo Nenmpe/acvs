@@ -2,8 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from core.permissions import role_required
 from .forms import StudentCreationForm
-from .decorators import university_admin_required
-from accounts.decorators import student_required
+from .decorators import university_admin_required, student_required
 from credentials.models import Credential
 from .models import AuditLog
 
@@ -11,10 +10,12 @@ from .models import AuditLog
 @student_required
 def student_dashboard(request):
     credentials = Credential.objects.filter(student=request.user)
-    
-    return render(request, "accounts/student_dashboard.html", {
-        "credentials": credentials
-    })
+
+    return render(
+        request,
+        "accounts/student_dashboard.html",
+        {"credentials": credentials}
+    )
 
 
 @login_required
@@ -32,7 +33,7 @@ def create_student(request):
                 student_id=student.id,
                 description=f"Admin {request.user.username} created student {student.username}"
             )
-            return redirect('dashboard')
+            return redirect("accounts:student_dashboard")
     else:
         form = StudentCreationForm()
 

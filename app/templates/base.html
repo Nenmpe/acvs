@@ -12,8 +12,9 @@
     {% if user.is_authenticated %}
         Logged in as: {{ user.username }} |
         <a href="/admin/">Admin</a> |
-        <a href="/accounts/create-student/">Create Student</a> |
-        <a href="/credentials/issue-credential/">Issue Credential</a>
+        <a href="{% url 'accounts:create_student' %}">Create Student</a> |
+        <a href="{% url 'credentials:issue_credential' %}">Issue Credential</a> |
+        <a href="{% url 'credentials:upload_verify' %}">Verify Certificate</a>
         <hr>
     {% endif %}
 
