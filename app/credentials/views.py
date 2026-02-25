@@ -17,6 +17,7 @@ from django.conf import settings
 from PIL import Image
 from pyzbar.pyzbar import decode
 from pdf2image import convert_from_path
+from django.urls import reverse
 
 
 @login_required
@@ -125,7 +126,11 @@ def upload_and_verify(request):
             os.remove(tmp_path)
 
         if qr_data:
-            return redirect(qr_data)
+            verify_url = reverse(
+                "verification:verify",
+                args=[qr_data]
+            )
+            return redirect(verify_url)
 
         return render(request, "credentials/upload_verify.html", {
             "error": "QR code not found."

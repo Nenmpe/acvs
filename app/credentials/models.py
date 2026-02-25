@@ -50,12 +50,14 @@ class Credential(models.Model):
 
 
     def generate_qr(self):
-        verification_url = f"{settings.BASE_URL}/verify/{self.credential_id}/"
-        qr = qrcode.make(verification_url)
+        # verification_url = f"{settings.BASE_URL}/verify/{self.credential_id}/"
+        verification_url_data = f"{self.credential_id}"
+        qr = qrcode.make(verification_url_data)
 
         buffer = BytesIO()
         qr.save(buffer, format='PNG')
-        file_name = f'qr_{self.credential_id}.png'
+        # file_name = f'qr_{self.credential_id}.png'
+        file_name = f'qr_{self.credential_id.hex[:16]}.png'
 
         self.qr_code.save(file_name, File(buffer), save=False)
 

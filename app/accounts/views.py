@@ -5,6 +5,7 @@ from .forms import StudentCreationForm
 from .decorators import university_admin_required, student_required
 from credentials.models import Credential
 from .models import AuditLog
+from django.contrib import messages
 
 
 @student_required
@@ -33,6 +34,7 @@ def create_student(request):
                 student_id=student.id,
                 description=f"Admin {request.user.username} created student {student.username}"
             )
+            messages.success(request, "Student created successfully.")
             return redirect("accounts:student_dashboard")
     else:
         form = StudentCreationForm()

@@ -2,19 +2,46 @@
 
 {% block content %}
 
-<h2>Verification Result</h2>
+<div class="card shadow-lg text-center">
+    <div class="card-header bg-dark text-white">
+        Certificate Verification
+    </div>
 
-<p><strong>Status:</strong> {{ status }}</p>
+    <div class="card-body">
 
-<p><strong>Student:</strong> {{ credential.student.username }}</p>
-<p><strong>Degree:</strong> {{ credential.degree_name }}</p>
-<p><strong>Field:</strong> {{ credential.field_of_study }}</p>
-<p><strong>Grade:</strong> {{ credential.grade }}</p>
-<p><strong>Issue Date:</strong> {{ credential.issue_date }}</p>
+        {% if credential %}
+            {% if status == "VALID" %}
+                <h3 class="text-success">
+                    <i class="bi bi-check-circle"></i>
+                    Verified
+                </h3>
+            {% elif status == "TAMPERED" %}
+                <h3 class="text-danger">
+                    <i class="bi bi-x-circle"></i>
+                    Tampered
+                </h3>
+            {% else %}
+                <h3 class="text-danger">
+                    <i class="bi bi-x-circle"></i>
+                    Revoked
+                </h3>
+            {% endif %}
 
-{% if credential.qr_code %}
-    <h3>QR Code:</h3>
-    <img src="{{ credential.qr_code.url }}" width="200">
-{% endif %}
+            <hr>
+
+            <p><strong>Student:</strong> {{ credential.student.username }}</p>
+            <p><strong>Degree:</strong> {{ credential.degree_name }}</p>
+            <p><strong>Issued By:</strong> {{ credential.university.name }}</p>
+            <p><strong>Date:</strong> {{ credential.issue_date }}</p>
+
+        {% else %}
+            <h3 class="text-danger">
+                <i class="bi bi-x-circle"></i>
+                Invalid Certificate
+            </h3>
+        {% endif %}
+
+    </div>
+</div>
 
 {% endblock %}

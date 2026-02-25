@@ -11,6 +11,16 @@ class StudentCreationForm(forms.ModelForm):
         model = User
         fields = ['username', 'email', 'password']
 
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        for field in self.fields.values():
+            field.widget.attrs.update({
+                "class": "form-control"
+            })
+
+
     def save(self, commit=True, university=None):
         user = super().save(commit=False)
         user.role = 'STUDENT'
