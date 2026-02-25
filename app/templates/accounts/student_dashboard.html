@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="card shadow-sm">
+    <div class="card-header bg-primary text-white">
+        <h4 class="mb-0">My Certificates</h4>
+    </div>
+
+    <div class="card-body">
+
+        {% if credentials %}
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead class="table-light">
+                <tr>
+                    <th>Degree</th>
+                    <th>Issued On</th>
+                    <th>Status</th>
+                    <th>Download</th>
+                </tr>
+                </thead>
+
+                <tbody>
+                {% for credential in credentials %}
+                <tr>
+                    <td>{{ credential.degree_name }}</td>
+                    <td>{{ credential.issue_date }}</td>
+
+                    <td>
+                        <span class="badge bg-success">Issued</span>
+                    </td>
+
+                    <td>
+                        {% if credential.pdf_file %}
+                        <a href="{% url 'credentials:download_certificate' credential.id %}"
+                           class="btn btn-sm btn-outline-primary">
+                            <i class="bi bi-download"></i> PDF
+                        </a>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+            <div class="alert alert-info">
+                No certificates issued yet.
+            </div>
+        {% endif %}
+
+    </div>
+</div>
+
+{% endblock %}

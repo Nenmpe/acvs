@@ -41,15 +41,23 @@ class Credential(models.Model):
 
     is_revoked = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
+    
+    pdf_file = models.FileField(
+        upload_to="certificates/",
+        null=True,
+        blank=True
+    )
 
 
     def generate_qr(self):
-        verification_url = f"http://localhost:8000/verify/{self.credential_id}/"
-        qr = qrcode.make(verification_url)
+        # verification_url = f"{settings.BASE_URL}/verify/{self.credential_id}/"
+        verification_url_data = f"{self.credential_id}"
+        qr = qrcode.make(verification_url_data)
 
         buffer = BytesIO()
         qr.save(buffer, format='PNG')
-        file_name = f'qr_{self.credential_id}.png'
+        # file_name = f'qr_{self.credential_id}.png'
+        file_name = f'qr_{self.credential_id.hex[:16]}.png'
 
         self.qr_code.save(file_name, File(buffer), save=False)
 
@@ -75,18 +83,20 @@ class Credential(models.Model):
         return signature
     
     def save(self, *args, **kwargs):
+        # Only generate hash + signature on first creation
+        if not self.pk:
+            self.hash_value = self.generate_hash()
+            super().save(*args, **kwargs)
 
-        # Generate hash
-        self.hash_value = self.generate_hash()
+            self.digital_signature = self.sign_credential()
+            super().save(update_fields=["digital_signature"])
 
-        # Generate signature
-        self.digital_signature = self.sign_credential()
-
-        super().save(*args, **kwargs)
-        
-        if not self.qr_code:
-            self.generate_qr()
-            super().save(update_fields=['qr_code'])
+            # Generate QR only once
+            if not self.qr_code:
+                self.generate_qr()
+                super().save(update_fields=["qr_code"])
+        else:
+            super().save(*args, **kwargs)
 
 
     def __str__(self):
