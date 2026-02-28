@@ -13,7 +13,11 @@ class CredentialForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
 
         if university:
-            self.fields['student'].queryset = User.objects.filter(
+            issued_students = Credential.objects.filter(
+                university=university
+            ).values_list('student_id', flat=True)
+
+        self.fields['student'].queryset = User.objects.filter(
                 role="STUDENT",
                 university=university
-            )
+            ).exclude(id__in=issued_students)

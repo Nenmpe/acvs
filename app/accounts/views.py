@@ -35,7 +35,7 @@ def create_student(request):
                 description=f"Admin {request.user.username} created student {student.username}"
             )
             messages.success(request, "Student created successfully.")
-            return redirect("accounts:student_dashboard")
+            return redirect("accounts:create_student")
     else:
         form = StudentCreationForm()
 
