@@ -1,0 +1,21 @@
+Open Django shell inside Docker:
+
+    docker compose exec web python manage.py shell
+
+Then:
+
+    from core.security import generate_rsa_keys
+
+    private, public = generate_rsa_keys()
+
+    with open("private_key.pem", "wb") as f:
+        f.write(private)
+
+    with open("public_key.pem", "wb") as f:
+        f.write(public)
+
+
+Now you will have:
+
+    app/private_key.pem
+    app/public_key.pem

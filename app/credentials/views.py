@@ -18,6 +18,7 @@ from PIL import Image
 from pyzbar.pyzbar import decode
 from pdf2image import convert_from_path
 from django.urls import reverse
+from django.contrib import messages
 
 
 @login_required
@@ -30,6 +31,14 @@ def issue_credential(request):
         if form.is_valid():
             credential = form.save(commit=False)
             credential.university = request.user.university
+
+            if Credential.objects.filter(
+                student=credential.student,
+                university=request.user.university
+            ).exists():
+                messages.error(request, "Credential already issued to this student.")
+                return redirect('issue_credential')
+
             credential.save()
 
             # Generate PDF
@@ -38,11 +47,18 @@ def issue_credential(request):
                 "credentials/certificate.html",
                 {
                     "credential": credential,
-                    "qr_path": request.build_absolute_uri(credential.qr_code.url)
+                    "qr_path": credential.qr_code.path
                 }
             )
 
-            pdf_file = HTML(string=html_string).write_pdf()
+            html = HTML(
+                string=html_string,
+                base_url=settings.MEDIA_ROOT
+            )
+
+            pdf_file = html.write_pdf()
+
+            # pdf_file = HTML(string=html_string).write_pdf()
 
             file_name = f"certificate_{credential.id}.pdf"
 
@@ -59,7 +75,8 @@ def issue_credential(request):
                 student_id=credential.student.id,
                 description=f"Credential issued to {credential.student.username}"
             )
-            return redirect('dashboard')
+            messages.success(request, f"Credential issued successfully to {credential.student.username}")
+            return redirect('credentials:issue_credential')
     else:
         form = CredentialForm(university=request.user.university)
 

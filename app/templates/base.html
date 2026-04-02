@@ -28,16 +28,22 @@
 
                 {% if user.is_authenticated %}
 
-                    {% if user.role == "student" %}
+                    {% if user.role == "STUDENT" %}
                         <li class="nav-item">
-                            <a class="nav-link" href="{% url 'student_dashboard' %}">
+                            <a class="nav-link" href="{% url 'accounts:student_dashboard' %}">
                                 <i class="bi bi-mortarboard"></i> Dashboard
                             </a>
                         </li>
-                    {% elif user.role == "university" %}
+                    {% elif user.role == "UNIVERSITY_ADMIN" %}
                         <li class="nav-item">
-                            <a class="nav-link" href="{% url 'university_dashboard' %}">
-                                <i class="bi bi-building"></i> Dashboard
+                            <a class="nav-link" href="{% url 'accounts:create_student' %}">
+                                <i class="bi bi-building"></i> Create Student
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'credentials:issue_credential' %}">
+                                <i class="bi bi-building"></i> Issue Certificate
                             </a>
                         </li>
                     {% endif %}
