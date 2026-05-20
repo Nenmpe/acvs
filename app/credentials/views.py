@@ -19,6 +19,7 @@ from pyzbar.pyzbar import decode
 from pdf2image import convert_from_path
 from django.urls import reverse
 from django.contrib import messages
+from core.blockchain import store_hash_on_blockchain
 
 
 @login_required
@@ -39,6 +40,13 @@ def issue_credential(request):
                 messages.error(request, "Credential already issued to this student.")
                 return redirect('issue_credential')
 
+            credential.save()
+
+            # Store on blockchain
+            tx_hash = store_hash_on_blockchain(credential.credential_hash_value)
+
+            # Save
+            credential.blockchain_tx_hash = tx_hash
             credential.save()
 
             # Generate PDF

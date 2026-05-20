@@ -161,3 +161,9 @@ REST_FRAMEWORK = {
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
 }
+
+# Blockchain
+
+BLOCKCHAIN_RPC_URL = os.environ.get('BLOCKCHAIN_RPC_URL')
+BLOCKCHAIN_ACCOUNT = os.environ.get('BLOCKCHAIN_ACCOUNT')
+BLOCKCHAIN_PRIVATE_KEY = os.environ.get('BLOCKCHAIN_PRIVATE_KEY')

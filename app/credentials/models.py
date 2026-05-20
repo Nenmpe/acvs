@@ -8,6 +8,7 @@ from django.conf import settings
 import qrcode
 from io import BytesIO
 from django.core.files import File
+from core.utils.credintial_hash import generate_credential_hash
 
 
 class Credential(models.Model):
@@ -18,7 +19,7 @@ class Credential(models.Model):
         unique=True
     )
 
-    hash_value = models.CharField(max_length=256, blank=True)
+    credential_hash_value = models.CharField(max_length=256, blank=True)
     digital_signature = models.BinaryField(blank=True, null=True)
 
     qr_code = models.ImageField(upload_to='qr_codes/', blank=True, null=True)
@@ -33,6 +34,9 @@ class Credential(models.Model):
         on_delete=models.CASCADE,
         limit_choices_to={'role': 'STUDENT'}
     )
+
+    # For Blockchain
+    blockchain_tx_hash = models.CharField(max_length=255, blank=True, null=True)
 
     degree_name = models.CharField(max_length=255)
     field_of_study = models.CharField(max_length=255)
@@ -63,8 +67,9 @@ class Credential(models.Model):
 
 
     def generate_hash(self):
-        data_string = f"{self.student.username}{self.degree_name}{self.field_of_study}{self.issue_date}{self.grade}"
-        return hashlib.sha256(data_string.encode()).hexdigest()
+        # data_string = f"{self.student.username}{self.degree_name}{self.field_of_study}{self.issue_date}{self.grade}"
+        # return hashlib.sha256(data_string.encode()).hexdigest()
+        return generate_credential_hash(self)
     
     def sign_credential(self):
 
@@ -75,7 +80,7 @@ class Credential(models.Model):
             )
 
         signature = private_key.sign(
-            self.hash_value.encode(),
+            self.credential_hash_value.encode(),
             padding.PKCS1v15(),
             hashes.SHA256()
         )
@@ -85,7 +90,7 @@ class Credential(models.Model):
     def save(self, *args, **kwargs):
         # Only generate hash + signature on first creation
         if not self.pk:
-            self.hash_value = self.generate_hash()
+            self.credential_hash_value = self.generate_hash()
             super().save(*args, **kwargs)
 
             self.digital_signature = self.sign_credential()
