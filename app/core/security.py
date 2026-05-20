@@ -31,7 +31,7 @@ def generate_rsa_keys():
 
 
 
-def verify_signature(hash_value, signature):
+def verify_signature(credential_hash_value, signature):
 
     with open("public_key.pem", "rb") as key_file:
         public_key = serialization.load_pem_public_key(
@@ -41,7 +41,7 @@ def verify_signature(hash_value, signature):
     try:
         public_key.verify(
             signature,
-            hash_value.encode(),
+            credential_hash_value.encode(),
             padding.PKCS1v15(),
             hashes.SHA256()
         )

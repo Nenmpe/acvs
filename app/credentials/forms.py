@@ -7,6 +7,9 @@ class CredentialForm(forms.ModelForm):
     class Meta:
         model = Credential
         fields = ['student', 'degree_name', 'field_of_study', 'grade', 'issue_date']
+        widgets = {
+            'issue_date': forms.DateInput(attrs={'type': 'date'}),
+        }
 
     def __init__(self, *args, **kwargs):
         university = kwargs.pop("university", None)

@@ -9,3 +9,6 @@ qrcode
 django-filter
 cryptography
 weasyprint
+web3==6.15.1
+eth-account
+python-dotenv
