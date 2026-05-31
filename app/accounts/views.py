@@ -6,6 +6,35 @@ from .decorators import university_admin_required, student_required
 from credentials.models import Credential
 from .models import AuditLog
 from django.contrib import messages
+from django.contrib.auth.forms import PasswordResetForm
+from django.contrib.auth.views import (
+        PasswordChangeView,
+        PasswordResetView,
+        PasswordResetDoneView,
+        PasswordResetConfirmView,
+        PasswordResetCompleteView
+    )
+from django.urls import reverse_lazy
+from django.contrib.auth import update_session_auth_hash
+from .forms import CustomPasswordChangeForm
+
+
+@login_required
+def dashboard_redirect(request):
+
+    if request.user.role == 'STUDENT':
+        return redirect('accounts:student_dashboard')
+
+    elif request.user.role == 'VERIFIER':
+        return redirect('accounts:verifier_dashboard')
+
+    elif request.user.role == 'UNIVERSITY_ADMIN':
+        return redirect('accounts:university_dashboard')
+
+    elif request.user.role == 'SUPER_ADMIN':
+        return redirect('/admin/')
+
+    return redirect('base:home')
 
 
 @student_required
@@ -16,6 +45,24 @@ def student_dashboard(request):
         request,
         "accounts/student_dashboard.html",
         {"credentials": credentials}
+    )
+
+
+def university_dashboard(request):
+    # credentials = Credential.objects.filter(student=request.user)
+
+    return render(
+        request,
+        "accounts/university_dashboard.html",
+        # {"credentials": credentials}
+    )
+
+
+def verifier_dashboard(request):
+
+    return render(
+        request,
+        "accounts/verifier_dashboard.html",
     )
 
 
@@ -40,3 +87,23 @@ def create_student(request):
         form = StudentCreationForm()
 
     return render(request, 'accounts/create_student.html', {'form': form})
+
+
+@login_required
+def change_password(request):
+
+    if request.method == 'POST':
+        form = CustomPasswordChangeForm(request.user, request.POST)
+
+        if form.is_valid():
+            user = form.save()
+            update_session_auth_hash(request, user)
+            messages.success(request, 'Password changed successfully.')
+            return redirect('accounts:dashboard')
+
+    else:
+        form = CustomPasswordChangeForm(request.user)
+
+    return render(request, 'accounts/change_password.html', {
+        'form': form
+    })

@@ -13,6 +13,8 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 from pathlib import Path
 from datetime import timedelta
 import os
+import environ
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -21,6 +23,14 @@ BASE_URL = os.environ.get("BASE_URL")
 
 # Main user model
 AUTH_USER_MODEL = 'accounts.User'
+
+
+env = environ.Env(
+    DEBUG=(bool, False)  # default value if not set
+)
+
+# reading .env file
+environ.Env.read_env(BASE_DIR / ".env")
 
 
 # Quick-start development settings - unsuitable for production
@@ -167,3 +177,11 @@ REST_FRAMEWORK = {
 BLOCKCHAIN_RPC_URL = os.environ.get('BLOCKCHAIN_RPC_URL')
 BLOCKCHAIN_ACCOUNT = os.environ.get('BLOCKCHAIN_ACCOUNT')
 BLOCKCHAIN_PRIVATE_KEY = os.environ.get('BLOCKCHAIN_PRIVATE_KEY')
+
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST="smtp.gmail.com"
+EMAIL_PORT=587
+EMAIL_HOST_USER = env('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')
+EMAIL_USE_TLS=True

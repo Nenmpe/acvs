@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="card shadow-sm">
+    <div class="card-header bg-primary text-white">
+        <h4 class="mb-0"></h4>
+    </div>
+
+    <div class="card-body">
+        <a class="btn btn-primary btn-sm" href="{% url 'accounts:change_password' %}">
+                            Change Password
+                        </a>
+        
+    </div>
+</div>
+
+{% endblock %}

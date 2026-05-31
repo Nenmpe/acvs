@@ -5,6 +5,7 @@ from django.conf import settings
 from django.contrib.auth import get_user_model
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth import login as auth_login, logout as auth_logout
+from accounts.forms import VerifierRegistrationForm
 
 User = get_user_model()
 
@@ -69,7 +70,29 @@ def login(request):
 
 
 # ---------------- REGISTER ----------------
+
 def register(request):
+
+    if request.user.is_authenticated:
+        return redirect('base:home')
+
+    if request.method == 'POST':
+        form = VerifierRegistrationForm(request.POST)
+
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Verifier account created successfully.')
+            return redirect('base:login')
+
+    else:
+        form = VerifierRegistrationForm()
+
+    return render(request, 'accounts/register.html', {
+        'form': form
+    })
+
+
+'''def register(request):
     if request.user.is_authenticated:
         return redirect('base:home')
 
@@ -100,7 +123,7 @@ def register(request):
         messages.success(request, "Account created successfully! Please login.")
         return redirect('base:login')
 
-    return render(request, "accounts/register.html")
+    return render(request, "accounts/register.html")'''
 
 
 # ---------------- LOGOUT ----------------
