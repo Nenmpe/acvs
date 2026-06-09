@@ -1,34 +1,45 @@
-{% extends "base.html" %}
+{% extends "accounts/dashboard.html" %}
 
-{% block content %}
+{% block dashboard_sidebar %}
 
-<div class="row g-4">
-
-    <div class="col-md-4">
-        <div class="card text-center shadow-sm">
-            <div class="card-body">
-                <h5>Total Certificates</h5>
-                <h2>{{ total_certificates }}</h2>
-            </div>
-        </div>
-    </div>
-
-    <div class="col-md-4">
-        <div class="card text-center shadow-sm">
-            <div class="card-body">
-                <h5>Students</h5>
-                <h2>{{ total_students }}</h2>
-            </div>
-        </div>
-    </div>
-
-</div>
-
-<hr class="my-4">
+<a href="{% url 'accounts:create_student' %}"
+   class="btn btn-outline-success">
+    Create Student
+</a>
 
 <a href="{% url 'credentials:issue_credential' %}"
-   class="btn btn-success">
-    <i class="bi bi-plus-circle"></i> Issue Certificate
+   class="btn btn-outline-warning">
+    Issue Certificate
 </a>
+
+{% endblock %}
+
+{% block dashboard_stats %}
+
+<div class="col-md-4">
+    <div class="card text-center shadow-sm">
+        <div class="card-body">
+            <h2>{{ total_students }}</h2>
+            <p>Students</p>
+        </div>
+    </div>
+</div>
+
+<div class="col-md-4">
+    <div class="card text-center shadow-sm">
+        <div class="card-body">
+            <h2>{{ total_credentials }}</h2>
+            <p>Credentials</p>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block dashboard_content %}
+
+<h5>Recent Credentials</h5>
+
+<!-- table -->
 
 {% endblock %}

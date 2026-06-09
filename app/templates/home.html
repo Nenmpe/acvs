@@ -1,0 +1,189 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<!-- Hero Section -->
+<section class="py-5">
+    <div class="row align-items-center">
+        <div class="col-lg-6">
+            <h1 class="display-4 fw-bold">
+                Academic Credential Verification System
+            </h1>
+
+            <p class="lead text-muted">
+                Securely issue, manage, and verify academic credentials using
+                blockchain technology.
+            </p>
+
+            <div class="mt-4">
+                <a href="{% url 'credentials:upload_verify' %}"
+                   class="btn btn-primary btn-lg me-2">
+                    Verify Credential
+                </a>
+
+                {% if not user.is_authenticated %}
+                <a href="{% url 'base:register' %}"
+                   class="btn btn-outline-primary btn-lg">
+                    Get Started
+                </a>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="col-lg-6 text-center">
+            <i class="bi bi-patch-check-fill text-primary"
+               style="font-size: 12rem;"></i>
+        </div>
+    </div>
+</section>
+
+<!-- Statistics -->
+<section class="py-5">
+    <div class="row g-4">
+
+        <div class="col-md-3">
+            <div class="card shadow-sm text-center">
+                <div class="card-body">
+                    <h2 class="fw-bold text-primary">
+                        {{ total_credentials|default:"0" }}
+                    </h2>
+                    <p class="mb-0">Certificates Issued</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card shadow-sm text-center">
+                <div class="card-body">
+                    <h2 class="fw-bold text-success">
+                        {{ total_students|default:"0" }}
+                    </h2>
+                    <p class="mb-0">Students</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card shadow-sm text-center">
+                <div class="card-body">
+                    <h2 class="fw-bold text-warning">
+                        {{ total_universities|default:"0" }}
+                    </h2>
+                    <p class="mb-0">Universities</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card shadow-sm text-center">
+                <div class="card-body">
+                    <h2 class="fw-bold text-danger">100%</h2>
+                    <p class="mb-0">Tamper Detection</p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+<!-- Features -->
+<section class="py-5">
+    <h2 class="text-center mb-5">System Features</h2>
+
+    <div class="row g-4">
+
+        <div class="col-md-3">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body text-center">
+                    <i class="bi bi-shield-lock fs-1 text-primary"></i>
+                    <h5 class="mt-3">Secure Storage</h5>
+                    <p>Credentials protected through blockchain verification.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body text-center">
+                    <i class="bi bi-lightning-charge fs-1 text-success"></i>
+                    <h5 class="mt-3">Instant Verification</h5>
+                    <p>Verify academic credentials within seconds.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body text-center">
+                    <i class="bi bi-file-earmark-lock fs-1 text-warning"></i>
+                    <h5 class="mt-3">Tamper Proof</h5>
+                    <p>Detect unauthorized modifications instantly.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body text-center">
+                    <i class="bi bi-qr-code-scan fs-1 text-danger"></i>
+                    <h5 class="mt-3">QR Verification</h5>
+                    <p>Quick verification through QR code scanning.</p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+<!-- How It Works -->
+<section class="py-5 bg-white rounded shadow-sm">
+    <h2 class="text-center mb-5">How It Works</h2>
+
+    <div class="row text-center">
+
+        <div class="col-md-3">
+            <i class="bi bi-building fs-1 text-primary"></i>
+            <h5 class="mt-3">Issue</h5>
+            <p>University issues credential.</p>
+        </div>
+
+        <div class="col-md-3">
+            <i class="bi bi-fingerprint fs-1 text-success"></i>
+            <h5 class="mt-3">Hash</h5>
+            <p>Unique cryptographic hash generated.</p>
+        </div>
+
+        <div class="col-md-3">
+            <i class="bi bi-link-45deg fs-1 text-warning"></i>
+            <h5 class="mt-3">Blockchain</h5>
+            <p>Hash stored securely on blockchain.</p>
+        </div>
+
+        <div class="col-md-3">
+            <i class="bi bi-search fs-1 text-danger"></i>
+            <h5 class="mt-3">Verify</h5>
+            <p>Anyone can verify authenticity.</p>
+        </div>
+
+    </div>
+</section>
+
+<!-- Call To Action -->
+<section class="py-5 text-center">
+    <div class="card bg-primary text-white shadow">
+        <div class="card-body p-5">
+            <h2>Verify Academic Credentials Instantly</h2>
+
+            <p class="lead">
+                Secure, transparent and blockchain-powered credential verification.
+            </p>
+
+            <a href="{% url 'credentials:upload_verify' %}"
+               class="btn btn-light btn-lg">
+                Verify Now
+            </a>
+        </div>
+    </div>
+</section>
+
+{% endblock %}

@@ -11,7 +11,7 @@ User = get_user_model()
 
 
 def home(request):
-    return render(request, 'base.html')
+    return render(request, 'home.html')
 
 
 _COOKIE_KWARGS = dict(path='/', httponly=True, samesite='Lax')

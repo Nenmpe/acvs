@@ -59,10 +59,14 @@ def university_dashboard(request):
 
 
 def verifier_dashboard(request):
-
+    user = request.user
+    
     return render(
         request,
         "accounts/verifier_dashboard.html",
+        {
+            "user": user
+        },
     )
 
 
