@@ -15,6 +15,21 @@
                     <i class="bi bi-check-circle"></i>
                     Verified
                 </h3>
+                {% if blockchain_pending %}
+                    <p class="text-warning mt-2">
+                        <i class="bi bi-hourglass-split"></i>
+                        Blockchain confirmation is still pending. Verified using integrity and digital signature only.
+                    </p>
+                {% endif %}
+            {% elif status == "BLOCKCHAIN_UNAVAILABLE" %}
+                <h3 class="text-warning">
+                    <i class="bi bi-exclamation-triangle"></i>
+                    Locally Verified
+                </h3>
+                <p class="text-muted mt-2">
+                    Integrity and digital signature checks passed, but the blockchain network
+                    could not be reached for on-chain confirmation. Please try again later.
+                </p>
             {% elif status == "TAMPERED" %}
                 <h3 class="text-danger">
                     <i class="bi bi-x-circle"></i>

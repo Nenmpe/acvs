@@ -64,7 +64,7 @@ def login(request):
             messages.success(request, "Login successful!")
             return response
         else:
-            messages.error(request, "Invalid username or password")
+            messages.error(request, "Invalid username or password", extra_tags="danger")
 
     return render(request, "accounts/login.html")
 
