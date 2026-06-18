@@ -28,13 +28,12 @@
 
                 {% if user.is_authenticated %}
 
-                    {% if user.role == "STUDENT" %}
                         <li class="nav-item">
-                            <a class="nav-link" href="{% url 'accounts:student_dashboard' %}">
+                            <a class="nav-link" href="{% url 'accounts:dashboard' %}">
                                 <i class="bi bi-mortarboard"></i> Dashboard
                             </a>
                         </li>
-                    {% elif user.role == "UNIVERSITY_ADMIN" %}
+                    {% if user.role == "UNIVERSITY_ADMIN" %}
                         <li class="nav-item">
                             <a class="nav-link" href="{% url 'accounts:create_student' %}">
                                 <i class="bi bi-building"></i> Create Student
@@ -62,11 +61,18 @@
 
                 {% else %}
 
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'base:login' %}">
+                    <li class="nav-item me-2">
+                        <a class="btn btn-outline-primary btn-sm" href="{% url 'base:login' %}">
                             Login
                         </a>
                     </li>
+
+                    <li class="nav-item">
+                        <a class="btn btn-primary btn-sm" href="{% url 'base:register' %}">
+                            Register
+                        </a>
+                    </li>
+
 
                 {% endif %}
 

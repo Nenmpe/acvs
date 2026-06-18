@@ -1,31 +1,48 @@
-import json
-import hashlib
 from web3 import Web3
+from web3.exceptions import TransactionNotFound
 from django.conf import settings
 
-# Connect to Ethereum Testnet (Sepolia)
-w3 = Web3(Web3.HTTPProvider(settings.BLOCKCHAIN_RPC_URL))
+BLOCKCHAIN_CONFIRMED = 'confirmed'
+BLOCKCHAIN_INVALID = 'invalid'
+BLOCKCHAIN_PENDING = 'pending'
+BLOCKCHAIN_UNAVAILABLE = 'unavailable'
+BLOCKCHAIN_NO_TX = 'no_tx'
+
+CONNECTIVITY_TIMEOUT_SECONDS = 10
+
+w3 = Web3(Web3.HTTPProvider(
+    settings.BLOCKCHAIN_RPC_URL,
+    request_kwargs={'timeout': CONNECTIVITY_TIMEOUT_SECONDS},
+))
 
 ACCOUNT = settings.BLOCKCHAIN_ACCOUNT
 PRIVATE_KEY = settings.BLOCKCHAIN_PRIVATE_KEY
 
-# def generate_credential_hash(credential):
-#     data = f"{credential.student.username}{credential.degree_name}{credential.field_of_study}{credential.issue_date}{credential.grade}"
-#     return hashlib.sha256(data.encode()).hexdigest()
+
+def is_blockchain_configured():
+    return bool(
+        settings.BLOCKCHAIN_RPC_URL
+        and settings.BLOCKCHAIN_ACCOUNT
+        and settings.BLOCKCHAIN_PRIVATE_KEY
+    )
+
+
+def check_blockchain_connectivity():
+    if not is_blockchain_configured():
+        return False
+
+    try:
+        if not w3.is_connected():
+            return False
+        w3.eth.block_number
+        return True
+    except Exception:
+        return False
 
 
 def store_hash_on_blockchain(credential_hash_value):
     nonce = w3.eth.get_transaction_count(ACCOUNT)
 
-    '''tx = {
-        'nonce': nonce,
-        'to': ACCOUNT,  # sending to self (cheap + simple)
-        'value': 0,
-        'gas': 200000,
-        'gasPrice': w3.to_wei('10', 'gwei'),
-        'data': w3.to_hex(text=credential_hash_value)
-    }
-    '''
     tx = {
         'nonce': nonce,
         'to': ACCOUNT,
@@ -35,7 +52,7 @@ def store_hash_on_blockchain(credential_hash_value):
         'chainId': 11155111,
         'data': w3.to_hex(text=credential_hash_value)
     }
-    
+
     signed_tx = w3.eth.account.sign_transaction(tx, PRIVATE_KEY)
     tx_hash = w3.eth.send_raw_transaction(signed_tx.rawTransaction)
 
@@ -43,30 +60,34 @@ def store_hash_on_blockchain(credential_hash_value):
 
 
 def verify_hash_on_blockchain(tx_hash, original_hash):
+    if not tx_hash:
+        return BLOCKCHAIN_NO_TX
+
     try:
         tx = w3.eth.get_transaction(tx_hash)
-        receipt = w3.eth.get_transaction_receipt(tx_hash)
-
-        print(f"Receit Status: {receipt.status}")
-
-        if receipt.status != 1:
-            return False
-
-        if tx['from'].lower() != ACCOUNT.lower():
-            return False
-
-        stored_data = tx.input
-
-        # decoded = bytes.fromhex(stored_data[2:]).decode()
-        if isinstance(stored_data, bytes):
-            decoded = stored_data.decode()
-        else:
-            decoded = stored_data
-
-        decoded = stored_data.decode().strip().lower()
-        original_hash = original_hash.strip().lower()
-
-        return decoded == original_hash
-
+    except TransactionNotFound:
+        return BLOCKCHAIN_PENDING
     except Exception:
-        return False
+        return BLOCKCHAIN_UNAVAILABLE
+
+    try:
+        receipt = w3.eth.get_transaction_receipt(tx_hash)
+    except TransactionNotFound:
+        return BLOCKCHAIN_PENDING
+    except Exception:
+        return BLOCKCHAIN_UNAVAILABLE
+
+    if receipt.status != 1:
+        return BLOCKCHAIN_INVALID
+
+    if tx['from'].lower() != ACCOUNT.lower():
+        return BLOCKCHAIN_INVALID
+
+    stored_data = tx.input
+    decoded = Web3.to_text(stored_data).strip().lower()
+    original_hash = original_hash.strip().lower()
+
+    if decoded == original_hash:
+        return BLOCKCHAIN_CONFIRMED
+
+    return BLOCKCHAIN_INVALID

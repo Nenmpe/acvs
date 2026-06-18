@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="row">
+
+    <!-- Sidebar -->
+    <div class="col-lg-3 mb-4">
+        <div class="card shadow-sm">
+            <div class="card-header bg-dark text-white">
+                Dashboard
+            </div>
+
+            <div class="card-body">
+                <div class="text-center mb-3">
+                    <i class="bi bi-person-circle fs-1"></i>
+                    <h5 class="mt-2 mb-0">{{ user.username }}</h5>
+                    <small class="text-muted">
+                        {{ user.get_role_display|default:user.role }}
+                    </small>
+                </div>
+
+                <hr>
+
+                <div class="d-grid gap-2">
+
+                    <a href="{% url 'accounts:change_password' %}"
+                       class="btn btn-outline-primary">
+                        <i class="bi bi-key"></i>
+                        Change Password
+                    </a>
+
+                    {% block dashboard_sidebar %}
+                    {% endblock %}
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="col-lg-9">
+
+        <!-- Welcome Card -->
+        <div class="card shadow-sm mb-4">
+            <div class="card-header bg-primary text-white">
+                <h4 class="mb-0">
+                    Welcome, {{ user.username }}
+                </h4>
+            </div>
+
+            <div class="card-body">
+                <p class="mb-0">
+                    You are logged in as
+                    <strong>{{ user.get_role_display|default:user.role }}</strong>.
+                </p>
+            </div>
+        </div>
+
+        <!-- Statistics -->
+        <div class="row mb-4">
+
+            {% block dashboard_stats %}
+            {% endblock %}
+
+        </div>
+
+        <!-- Main Dashboard Content -->
+        <div class="card shadow-sm">
+            <div class="card-body">
+
+                {% block dashboard_content %}
+                <p class="text-muted">
+                    Dashboard content goes here.
+                </p>
+                {% endblock %}
+
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

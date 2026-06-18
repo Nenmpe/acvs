@@ -1,0 +1,137 @@
+{% extends "accounts/dashboard.html" %}
+
+{% block dashboard_sidebar %}
+
+<a href="{% url 'credentials:upload_verify' %}"
+   class="btn btn-outline-primary">
+    Upload / Verify Certificate
+</a>
+
+<a href="{% url 'base:home' %}"
+   class="btn btn-outline-secondary">
+    Back to Home
+</a>
+
+{% endblock %}
+
+{% block dashboard_stats %}
+
+<div class="col-md-4">
+    <div class="card text-center shadow-sm">
+        <div class="card-body">
+            <h2>{{ total_verifications }}</h2>
+            <p class="mb-0">Verifications</p>
+        </div>
+    </div>
+</div>
+
+<div class="col-md-4">
+    <div class="card text-center shadow-sm">
+        <div class="card-body">
+            <h2>{{ valid_verifications }}</h2>
+            <p class="mb-0">Valid Results</p>
+        </div>
+    </div>
+</div>
+
+<div class="col-md-4">
+    <div class="card text-center shadow-sm">
+        <div class="card-body">
+            <h2>{{ pending_issues }}</h2>
+            <p class="mb-0">Pending / Issues</p>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block dashboard_content %}
+
+<div class="row g-3 mb-4">
+    <div class="col-lg-8">
+        <div class="card shadow-sm h-100">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">Verifier Actions</h5>
+            </div>
+            <div class="card-body">
+                <p class="mb-3">
+                    Use this dashboard to verify academic credentials through QR code scan or file upload.
+                </p>
+                <div class="d-flex flex-wrap gap-2">
+                    <a class="btn btn-success" href="{% url 'credentials:upload_verify' %}">
+                        Upload Certificate / QR
+                    </a>
+                    <a class="btn btn-outline-primary" href="{% url 'base:home' %}">
+                        Browse Home Dashboard
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4">
+        <div class="card shadow-sm h-100">
+            <div class="card-header bg-secondary text-white">
+                <h5 class="mb-0">Quick Tips</h5>
+            </div>
+            <div class="card-body">
+                <ul class="list-unstyled mb-0">
+                    <li>• Upload PDF or image files containing QR codes.</li>
+                    <li>• Verify the certificate QR code is clear.</li>
+                    <li>• Use a high-quality scan for the best detection results.</li>
+                    <li>• Contact admin if blockchain status is unavailable.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card shadow-sm">
+    <div class="card-header bg-light">
+        <h5 class="mb-0">Recent Verification Activity</h5>
+    </div>
+    <div class="card-body">
+        {% if recent_verifications %}
+            <div class="table-responsive">
+                <table class="table table-sm table-hover align-middle mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Date</th>
+                            <th>Credential ID</th>
+                            <th>Status</th>
+                            <th>Note</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in recent_verifications %}
+                        <tr>
+                            <td>{{ item.timestamp|date:'M d, Y H:i' }}</td>
+                            <td>{{ item.credential_id }}</td>
+                            <td>
+                                {% if 'Result: VALID' in item.description %}
+                                    <span class="badge bg-success">Valid</span>
+                                {% elif 'Result: BLOCKCHAIN_UNAVAILABLE' in item.description %}
+                                    <span class="badge bg-warning">Offline</span>
+                                {% elif 'Result: TAMPERED' in item.description %}
+                                    <span class="badge bg-danger">Tampered</span>
+                                {% elif 'revoked' in item.description|lower %}
+                                    <span class="badge bg-danger">Revoked</span>
+                                {% else %}
+                                    <span class="badge bg-secondary">Unknown</span>
+                                {% endif %}
+                            </td>
+                            <td>{{ item.description }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <p class="text-muted mb-0">
+                No recent verification records to display.
+            </p>
+        {% endif %}
+    </div>
+</div>
+
+{% endblock %}

@@ -5,12 +5,22 @@ from django.conf import settings
 from django.contrib.auth import get_user_model
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth import login as auth_login, logout as auth_logout
+from accounts.forms import VerifierRegistrationForm
+from credentials.models import Credential
+from universities.models import University
 
 User = get_user_model()
 
 
 def home(request):
-    return render(request, 'base.html')
+    context = {
+        "total_credentials": Credential.objects.count(),
+        "total_students": User.objects.filter(role="STUDENT").count(),
+        "total_universities": University.objects.count(),
+        "total_verifiers": User.objects.filter(role="VERIFIER").count(),
+        "tamper_detection_rate": "100%",
+    }
+    return render(request, 'home.html', context)
 
 
 _COOKIE_KWARGS = dict(path='/', httponly=True, samesite='Lax')
@@ -63,13 +73,35 @@ def login(request):
             messages.success(request, "Login successful!")
             return response
         else:
-            messages.error(request, "Invalid username or password")
+            messages.error(request, "Invalid username or password", extra_tags="danger")
 
     return render(request, "accounts/login.html")
 
 
 # ---------------- REGISTER ----------------
+
 def register(request):
+
+    if request.user.is_authenticated:
+        return redirect('base:home')
+
+    if request.method == 'POST':
+        form = VerifierRegistrationForm(request.POST)
+
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Verifier account created successfully.')
+            return redirect('base:login')
+
+    else:
+        form = VerifierRegistrationForm()
+
+    return render(request, 'accounts/register.html', {
+        'form': form
+    })
+
+
+'''def register(request):
     if request.user.is_authenticated:
         return redirect('base:home')
 
@@ -100,7 +132,7 @@ def register(request):
         messages.success(request, "Account created successfully! Please login.")
         return redirect('base:login')
 
-    return render(request, "accounts/register.html")
+    return render(request, "accounts/register.html")'''
 
 
 # ---------------- LOGOUT ----------------

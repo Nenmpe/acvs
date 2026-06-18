@@ -12,6 +12,7 @@ from django.core.files.base import ContentFile
 from django.http import FileResponse, Http404
 import os
 import tempfile
+import uuid
 from django.shortcuts import render, redirect
 from django.conf import settings
 from PIL import Image
@@ -19,7 +20,11 @@ from pyzbar.pyzbar import decode
 from pdf2image import convert_from_path
 from django.urls import reverse
 from django.contrib import messages
-from core.blockchain import store_hash_on_blockchain
+from core.blockchain import (
+    store_hash_on_blockchain,
+    check_blockchain_connectivity,
+    is_blockchain_configured,
+)
 
 
 @login_required
@@ -37,15 +42,38 @@ def issue_credential(request):
                 student=credential.student,
                 university=request.user.university
             ).exists():
-                messages.error(request, "Credential already issued to this student.")
+                messages.error(request, "Credential already issued to this student.", extra_tags="danger")
                 return redirect('issue_credential')
+
+            if not is_blockchain_configured():
+                messages.error(
+                    request,
+                    "Blockchain is not configured. Contact the system administrator.",
+                    extra_tags="danger"
+                )
+                return redirect('credentials:issue_credential')
+
+            if not check_blockchain_connectivity():
+                messages.error(
+                    request,
+                    "Unable to reach the blockchain network. Please check your internet "
+                    "connection and try again.", extra_tags="danger"
+                )
+                return redirect('credentials:issue_credential')
 
             credential.save()
 
-            # Store on blockchain
-            tx_hash = store_hash_on_blockchain(credential.credential_hash_value)
+            try:
+                tx_hash = store_hash_on_blockchain(credential.credential_hash_value)
+            except Exception:
+                credential.delete()
+                messages.error(
+                    request,
+                    "Blockchain transaction failed due to an unstable network connection. "
+                    "No credential was issued. Please try again.", extra_tags="danger"
+                )
+                return redirect('credentials:issue_credential')
 
-            # Save
             credential.blockchain_tx_hash = tx_hash
             credential.save()
 
@@ -151,9 +179,16 @@ def upload_and_verify(request):
             os.remove(tmp_path)
 
         if qr_data:
+            try:
+                credential_id = uuid.UUID(qr_data.strip())
+            except ValueError:
+                return render(request, "credentials/upload_verify.html", {
+                    "error": "Invalid credential QR code."
+                })
+
             verify_url = reverse(
                 "verification:verify",
-                args=[qr_data]
+                args=[credential_id]
             )
             return redirect(verify_url)
 

@@ -61,7 +61,7 @@ class Credential(models.Model):
         buffer = BytesIO()
         qr.save(buffer, format='PNG')
         # file_name = f'qr_{self.credential_id}.png'
-        file_name = f'qr_{self.credential_id.hex[:16]}.png'
+        file_name = f'qr_{self.credential_id.hex[:16]}_{self.id}.png'
 
         self.qr_code.save(file_name, File(buffer), save=False)
 
