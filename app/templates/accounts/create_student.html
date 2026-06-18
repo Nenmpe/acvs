@@ -40,7 +40,15 @@
 
                     <div class="mb-3">
                         {{ form.password.label_tag }}
-                        {{ form.password }}
+                        <div class="input-group">
+                            {{ form.password }}
+                            <button class="btn btn-outline-secondary password-toggle" type="button" aria-label="Toggle password visibility">
+                                <i class="bi bi-eye"></i>
+                            </button>
+                        </div>
+                        <div class="form-text text-muted">
+                            Use a strong password with at least 8 characters, one uppercase letter, one number, and one special symbol.
+                        </div>
                         {% if form.password.errors %}
                             <div class="text-danger small">
                                 {{ form.password.errors }}

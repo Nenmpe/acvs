@@ -29,17 +29,40 @@
 
                         <div class="mb-3">
                             <label class="form-label">Password</label>
-                            {{ form.password1 }}
+                            <div class="input-group">
+                                {{ form.password1 }}
+                                <button class="btn btn-outline-secondary password-toggle" type="button" aria-label="Toggle password visibility">
+                                    <i class="bi bi-eye"></i>
+                                </button>
+                            </div>
+                            <div class="form-text text-muted">
+                                Use a strong password with at least 8 characters, one uppercase letter, one number, and one special symbol.
+                            </div>
+                            {% if form.password1.errors %}
+                                <div class="text-danger small">
+                                    {{ form.password1.errors }}
+                                </div>
+                            {% endif %}
                         </div>
 
                         <div class="mb-3">
                             <label class="form-label">Confirm Password</label>
-                            {{ form.password2 }}
+                            <div class="input-group">
+                                {{ form.password2 }}
+                                <button class="btn btn-outline-secondary password-toggle" type="button" aria-label="Toggle password visibility">
+                                    <i class="bi bi-eye"></i>
+                                </button>
+                            </div>
+                            {% if form.password2.errors %}
+                                <div class="text-danger small">
+                                    {{ form.password2.errors }}
+                                </div>
+                            {% endif %}
                         </div>
 
-                        {% if form.errors %}
+                        {% if form.non_field_errors %}
                             <div class="alert alert-danger">
-                                {{ form.errors }}
+                                {{ form.non_field_errors }}
                             </div>
                         {% endif %}
 
