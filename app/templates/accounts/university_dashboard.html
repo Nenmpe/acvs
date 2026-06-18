@@ -40,6 +40,39 @@
 
 <h5>Recent Credentials</h5>
 
-<!-- table -->
+{% if recent_credentials %}
+<div class="table-responsive">
+    <table class="table table-hover align-middle">
+        <thead class="table-light">
+            <tr>
+                <th>Student</th>
+                <th>Degree</th>
+                <th>Issued On</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for credential in recent_credentials %}
+            <tr>
+                <td>{{ credential.student.username }}</td>
+                <td>{{ credential.degree_name }}</td>
+                <td>{{ credential.issue_date }}</td>
+                <td>
+                    {% if credential.is_revoked %}
+                    <span class="badge bg-danger">Revoked</span>
+                    {% else %}
+                    <span class="badge bg-success">Active</span>
+                    {% endif %}
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% else %}
+<div class="alert alert-info mb-0">
+    No credentials have been issued yet.
+</div>
+{% endif %}
 
 {% endblock %}

@@ -16,7 +16,7 @@
     <div class="card shadow-sm text-center">
         <div class="card-body">
             <i class="bi bi-award fs-2 text-primary"></i>
-            <h2 class="mt-2">{{ credentials|length }}</h2>
+            <h2 class="mt-2">{{ total_credentials }}</h2>
             <p class="mb-0">Certificates</p>
         </div>
     </div>
@@ -26,8 +26,8 @@
     <div class="card shadow-sm text-center">
         <div class="card-body">
             <i class="bi bi-patch-check fs-2 text-success"></i>
-            <h2 class="mt-2">{{ credentials|length }}</h2>
-            <p class="mb-0">Verified</p>
+            <h2 class="mt-2">{{ active_credentials }}</h2>
+            <p class="mb-0">Active</p>
         </div>
     </div>
 </div>
@@ -36,7 +36,7 @@
     <div class="card shadow-sm text-center">
         <div class="card-body">
             <i class="bi bi-download fs-2 text-warning"></i>
-            <h2 class="mt-2">{{ credentials|length }}</h2>
+            <h2 class="mt-2">{{ available_pdfs }}</h2>
             <p class="mb-0">Available PDFs</p>
         </div>
     </div>

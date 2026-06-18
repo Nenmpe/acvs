@@ -66,7 +66,7 @@ def verify_credential(request, credential_id):
     }
 
     AuditLog.objects.create(
-        user=request.user if request.user else None,
+        user=request.user if request.user.is_authenticated else None,
         action='VERIFY_CREDENTIAL',
         credential_id=credential.id,
         description=audit_description

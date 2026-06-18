@@ -23,6 +23,27 @@ class User(AbstractUser):
 
     def __str__(self):
         return f"{self.username} ({self.role})"
+
+
+class Student(User):
+    class Meta:
+        proxy = True
+        verbose_name = "Student"
+        verbose_name_plural = "Students"
+
+
+class UniversityAdmin(User):
+    class Meta:
+        proxy = True
+        verbose_name = "University Admin"
+        verbose_name_plural = "University Admins"
+
+
+class Verifier(User):
+    class Meta:
+        proxy = True
+        verbose_name = "Verifier"
+        verbose_name_plural = "Verifiers"
     
 
 
@@ -54,5 +75,6 @@ class AuditLog(models.Model):
         raise Exception("Audit logs cannot be deleted")
 
     def __str__(self):
-        return f"{self.user} - {self.action} - {self.timestamp}"
+        user_display = self.user.username if self.user is not None else "Guest"
+        return f"{user_display} - {self.action} - {self.timestamp}"
 

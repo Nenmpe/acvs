@@ -17,6 +17,9 @@ from django.contrib.auth.views import (
 from django.urls import reverse_lazy
 from django.contrib.auth import update_session_auth_hash
 from .forms import CustomPasswordChangeForm
+from django.contrib.auth import get_user_model
+
+User = get_user_model()
 
 
 @login_required
@@ -40,32 +43,67 @@ def dashboard_redirect(request):
 @student_required
 def student_dashboard(request):
     credentials = Credential.objects.filter(student=request.user)
+    available_pdfs = credentials.exclude(pdf_file="").exclude(pdf_file__isnull=True).count()
+    active_credentials = credentials.filter(is_revoked=False).count()
 
     return render(
         request,
         "accounts/student_dashboard.html",
-        {"credentials": credentials}
+        {
+            "credentials": credentials,
+            "total_credentials": credentials.count(),
+            "active_credentials": active_credentials,
+            "available_pdfs": available_pdfs,
+        }
     )
 
 
+@login_required
+@role_required('UNIVERSITY_ADMIN')
+@university_admin_required
 def university_dashboard(request):
-    # credentials = Credential.objects.filter(student=request.user)
+    university = request.user.university
+    credentials = Credential.objects.filter(university=university)
+    students = User.objects.filter(role="STUDENT", university=university)
 
     return render(
         request,
         "accounts/university_dashboard.html",
-        # {"credentials": credentials}
+        {
+            "total_students": students.count(),
+            "total_credentials": credentials.count(),
+            "recent_credentials": credentials.select_related("student").order_by("-created_at")[:5],
+        }
     )
 
 
+@login_required
+@role_required('VERIFIER')
 def verifier_dashboard(request):
     user = request.user
-    
+    verifications = AuditLog.objects.filter(
+        user=request.user,
+        action='VERIFY_CREDENTIAL'
+    )
+
+    total_verifications = verifications.count()
+    valid_verifications = verifications.filter(
+        description__icontains='Result: VALID'
+    ).count() + verifications.filter(
+        description__icontains='Result: BLOCKCHAIN_UNAVAILABLE'
+    ).count()
+    pending_issues = total_verifications - valid_verifications
+    recent_verifications = verifications.order_by('-timestamp')[:5]
+
     return render(
         request,
         "accounts/verifier_dashboard.html",
         {
-            "user": user
+            "user": user,
+            "total_verifications": total_verifications,
+            "valid_verifications": valid_verifications,
+            "pending_issues": pending_issues,
+            "recent_verifications": recent_verifications,
         },
     )
 

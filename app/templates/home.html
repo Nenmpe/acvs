@@ -77,7 +77,9 @@
         <div class="col-md-3">
             <div class="card shadow-sm text-center">
                 <div class="card-body">
-                    <h2 class="fw-bold text-danger">100%</h2>
+                    <h2 class="fw-bold text-danger">
+                        {{ tamper_detection_rate|default:"100%" }}
+                    </h2>
                     <p class="mb-0">Tamper Detection</p>
                 </div>
             </div>

@@ -6,12 +6,21 @@ from django.contrib.auth import get_user_model
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth import login as auth_login, logout as auth_logout
 from accounts.forms import VerifierRegistrationForm
+from credentials.models import Credential
+from universities.models import University
 
 User = get_user_model()
 
 
 def home(request):
-    return render(request, 'home.html')
+    context = {
+        "total_credentials": Credential.objects.count(),
+        "total_students": User.objects.filter(role="STUDENT").count(),
+        "total_universities": University.objects.count(),
+        "total_verifiers": User.objects.filter(role="VERIFIER").count(),
+        "tamper_detection_rate": "100%",
+    }
+    return render(request, 'home.html', context)
 
 
 _COOKIE_KWARGS = dict(path='/', httponly=True, samesite='Lax')
