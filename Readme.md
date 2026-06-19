@@ -142,9 +142,10 @@ cd acvs
    ```bash
 docker-compose up --build
 ```
-4. Apply migrations and create a superuser:
+4. Apply migrations, collectstatic and create a superuser:
    ```bash
 docker exec -it acvs_web python manage.py migrate
+docker compose -it acvs_web python manage.py collectstatic --noinput
 docker exec -it acvs_web python manage.py createsuperuser
 ```
 5. Visit `http://localhost:8000`.

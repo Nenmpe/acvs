@@ -2,6 +2,7 @@
 
 # For Not Uploading The Generated PDF and QR images
 app/media/*
+app/staticfiles/*
 
 # # Ignore Django migration files
 # **/migrations/*.py

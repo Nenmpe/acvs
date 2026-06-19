@@ -1,0 +1,197 @@
+/* Increase font sizes for Django Admin */
+
+* {
+    font-size: 16px !important;
+}
+
+body {
+    font-size: 16px !important;
+}
+
+html {
+    font-size: 16px !important;
+}
+
+/* Main content area */
+#container {
+    font-size: 16px !important;
+}
+
+#content {
+    font-size: 16px !important;
+}
+
+#content-main {
+    font-size: 16px !important;
+}
+
+/* Tables */
+table {
+    font-size: 15px !important;
+}
+
+thead {
+    font-size: 15px !important;
+}
+
+th {
+    font-size: 15px !important;
+    padding: 10px 12px !important;
+}
+
+td {
+    font-size: 15px !important;
+    padding: 10px 12px !important;
+}
+
+/* Form elements */
+input[type="text"],
+input[type="password"],
+input[type="email"],
+input[type="url"],
+input[type="number"],
+input[type="search"],
+input[type="date"],
+input[type="datetime-local"],
+select,
+textarea {
+    font-size: 15px !important;
+    padding: 8px 10px !important;
+}
+
+/* Buttons */
+.button,
+input[type="submit"],
+input[type="button"],
+input[type="reset"] {
+    font-size: 15px !important;
+    padding: 8px 15px !important;
+}
+
+a.button {
+    font-size: 15px !important;
+    padding: 8px 15px !important;
+}
+
+/* Labels */
+label {
+    font-size: 15px !important;
+}
+
+/* Headers */
+h1 {
+    font-size: 28px !important;
+}
+
+h2 {
+    font-size: 24px !important;
+}
+
+h3 {
+    font-size: 20px !important;
+}
+
+h4 {
+    font-size: 18px !important;
+}
+
+h5 {
+    font-size: 16px !important;
+}
+
+h6 {
+    font-size: 15px !important;
+}
+
+/* Breadcrumbs */
+.breadcrumbs {
+    font-size: 15px !important;
+}
+
+#user-tools {
+    font-size: 15px !important;
+}
+
+/* Navigation */
+#nav-sidebar {
+    font-size: 15px !important;
+}
+
+#nav-global {
+    font-size: 15px !important;
+}
+
+#nav-global li {
+    font-size: 15px !important;
+}
+
+/* Messages */
+.messagelist li {
+    font-size: 15px !important;
+    padding: 10px 12px !important;
+}
+
+/* Fieldsets and forms */
+fieldset {
+    font-size: 15px !important;
+}
+
+.module {
+    font-size: 15px !important;
+}
+
+.module h2 {
+    font-size: 20px !important;
+}
+
+/* Help text */
+.help,
+.help-block,
+.help-text,
+p.help {
+    font-size: 14px !important;
+}
+
+/* Admin list view */
+.results {
+    font-size: 15px !important;
+}
+
+.result-list {
+    font-size: 15px !important;
+}
+
+.paginator {
+    font-size: 15px !important;
+}
+
+/* Search */
+#searchbar,
+#toolbar {
+    font-size: 15px !important;
+}
+
+#searchbar input {
+    font-size: 15px !important;
+    padding: 8px 10px !important;
+}
+
+/* Admin site header */
+#header {
+    font-size: 18px !important;
+}
+
+#site-name {
+    font-size: 35px !important;
+}
+
+#site-name a {
+    font-size: 35px !important;
+}
+
+/* Checkboxes and radio buttons */
+input[type="checkbox"],
+input[type="radio"] {
+    width: 18px !important;
+    height: 18px !important;
+}
