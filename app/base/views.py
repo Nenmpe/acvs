@@ -92,47 +92,16 @@ def register(request):
             form.save()
             messages.success(request, 'Verifier account created successfully.')
             return redirect('base:login')
-
+        else:
+            # Log errors for debugging and show a message so the template can display field errors
+            print("Form is invalid", form.errors.as_json())
+            messages.error(request, 'Please correct the errors below.', extra_tags="danger")
     else:
         form = VerifierRegistrationForm()
 
     return render(request, 'accounts/register.html', {
         'form': form
     })
-
-
-'''def register(request):
-    if request.user.is_authenticated:
-        return redirect('base:home')
-
-    if request.method == "POST":
-        username = request.POST.get("username")
-        email = request.POST.get("email")
-        password1 = request.POST.get("password1")
-        password2 = request.POST.get("password2")
-
-        if password1 != password2:
-            messages.error(request, "Passwords do not match")
-            return redirect('register')
-
-        if User.objects.filter(username=username).exists():
-            messages.error(request, "Username already exists")
-            return redirect('register')
-
-        if User.objects.filter(email=email).exists():
-            messages.error(request, "Email already registered")
-            return redirect('register')
-
-        User.objects.create_user(
-            username=username,
-            email=email,
-            password=password1
-        )
-
-        messages.success(request, "Account created successfully! Please login.")
-        return redirect('base:login')
-
-    return render(request, "accounts/register.html")'''
 
 
 # ---------------- LOGOUT ----------------
