@@ -34,6 +34,13 @@ class Credential(models.Model):
         on_delete=models.CASCADE,
         limit_choices_to={'role': 'STUDENT'}
     )
+    course = models.ForeignKey(
+        'universities.UniversityCourse',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='credentials'
+    )
 
     # For Blockchain
     blockchain_tx_hash = models.CharField(max_length=255, blank=True, null=True)
@@ -88,6 +95,13 @@ class Credential(models.Model):
         return signature
     
     def save(self, *args, **kwargs):
+        if self.student_id and not self.course_id and getattr(self.student, 'course', None):
+            self.course = self.student.course
+
+        if self.course:
+            self.degree_name = self.course.degree_name
+            self.field_of_study = self.course.field_of_study
+
         # Only generate hash + signature on first creation
         if not self.pk:
             self.credential_hash_value = self.generate_hash()

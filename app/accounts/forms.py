@@ -4,6 +4,8 @@ from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError
 
+from universities.models import UniversityCourse
+
 User = get_user_model()
 
 
@@ -17,10 +19,19 @@ class StudentCreationForm(forms.ModelForm):
 
     class Meta:
         model = User
-        fields = ['username', 'email', 'password']
+        fields = ['username', 'email', 'password', 'course']
 
     def __init__(self, *args, **kwargs):
+        university = kwargs.pop('university', None)
         super().__init__(*args, **kwargs)
+
+        if university:
+            self.fields['course'].queryset = UniversityCourse.objects.filter(university=university)
+        else:
+            self.fields['course'].queryset = UniversityCourse.objects.none()
+
+        self.fields['course'].label = 'Course / Degree'
+        self.fields['course'].empty_label = 'Select a course'
 
         for field in self.fields.values():
             existing_classes = field.widget.attrs.get('class', '')
@@ -42,6 +53,7 @@ class StudentCreationForm(forms.ModelForm):
         user = super().save(commit=False)
         user.role = 'STUDENT'
         user.university = university
+        user.course = self.cleaned_data.get('course')
         user.set_password(self.cleaned_data['password'])
 
         if commit:

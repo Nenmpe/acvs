@@ -20,6 +20,13 @@ class User(AbstractUser):
         null=True,
         blank=True
     )
+    course = models.ForeignKey(
+        'universities.UniversityCourse',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='students'
+    )
 
     def __str__(self):
         return f"{self.username} ({self.role})"
@@ -54,6 +61,7 @@ class AuditLog(models.Model):
         ('ISSUE_CREDENTIAL', 'Issue Credential'),
         ('REVOKE_CREDENTIAL', 'Revoke Credential'),
         ('VERIFY_CREDENTIAL', 'Verify Credential'),
+        ('ADD_COURSE', 'Add Course'),
     )
 
     user = models.ForeignKey(

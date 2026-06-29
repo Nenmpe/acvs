@@ -57,6 +57,21 @@ select,
 textarea {
     font-size: 15px !important;
     padding: 8px 10px !important;
+    line-height: 1.5 !important;
+}
+
+select {
+    min-height: 38px !important;
+    height: auto !important;
+}
+
+select[multiple] {
+    min-height: 160px !important;
+}
+
+select option {
+    font-size: 15px !important;
+    line-height: 1.5 !important;
 }
 
 /* Buttons */

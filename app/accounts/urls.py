@@ -13,6 +13,12 @@ urlpatterns = [
         name='create_student'
     ),
 
+    path(
+        'manage-courses/',
+        views.manage_courses,
+        name='manage_courses'
+    ),
+
     # Dashboards
     path(
         'student-dashboard/',

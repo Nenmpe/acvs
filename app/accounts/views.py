@@ -5,6 +5,7 @@ from .forms import StudentCreationForm
 from .decorators import university_admin_required, student_required
 from credentials.models import Credential
 from .models import AuditLog
+from universities.models import UniversityCourse
 from django.contrib import messages
 from django.contrib.auth.forms import PasswordResetForm
 from django.contrib.auth.views import (
@@ -114,7 +115,7 @@ def verifier_dashboard(request):
 def create_student(request):
 
     if request.method == 'POST':
-        form = StudentCreationForm(request.POST)
+        form = StudentCreationForm(request.POST, university=request.user.university)
         if form.is_valid():
             student = form.save(university=request.user.university)
             AuditLog.objects.create(
@@ -126,9 +127,46 @@ def create_student(request):
             messages.success(request, "Student created successfully.")
             return redirect("accounts:create_student")
     else:
-        form = StudentCreationForm()
+        form = StudentCreationForm(university=request.user.university)
 
     return render(request, 'accounts/create_student.html', {'form': form})
+
+
+@login_required
+@role_required('UNIVERSITY_ADMIN')
+@university_admin_required
+def manage_courses(request):
+    university = request.user.university
+    courses = UniversityCourse.objects.filter(university=university).order_by('degree_name', 'course_name')
+
+    if request.method == 'POST':
+        degree_name = request.POST.get('degree_name', '').strip()
+        course_name = request.POST.get('course_name', '').strip()
+        field_of_study = request.POST.get('field_of_study', '').strip()
+
+        if not all([degree_name, course_name, field_of_study]):
+            messages.error(request, 'Please fill in all course fields.', extra_tags='danger')
+        else:
+            course, created = UniversityCourse.objects.get_or_create(
+                university=university,
+                degree_name=degree_name,
+                course_name=course_name,
+                field_of_study=field_of_study,
+            )
+            AuditLog.objects.create(
+                user=request.user,
+                action='ADD_COURSE',
+                description=(
+                    f"Admin {request.user.username} {'created' if created else 'added'} course "
+                    f"{course.degree_name} - {course.course_name} ({course.field_of_study})"
+                ),
+            )
+            messages.success(request, 'Course added successfully.')
+            return redirect('accounts:manage_courses')
+
+    return render(request, 'accounts/manage_courses.html', {
+        'courses': courses,
+    })
 
 
 @login_required

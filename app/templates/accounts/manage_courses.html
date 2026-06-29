@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card shadow">
+            <div class="card-header bg-info text-white">
+                <h5 class="mb-0">
+                    <i class="bi bi-journal-bookmark"></i>
+                    Manage Courses
+                </h5>
+            </div>
+
+            <div class="card-body">
+                <form method="post" class="mb-4">
+                    {% csrf_token %}
+
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <label for="degree_name" class="form-label">Degree / Level</label>
+                            <input type="text" class="form-control" id="degree_name" name="degree_name" placeholder="e.g. Bachelor" required>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label for="course_name" class="form-label">Course / Program</label>
+                            <input type="text" class="form-control" id="course_name" name="course_name" placeholder="e.g. BCA" required>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label for="field_of_study" class="form-label">Field of Study</label>
+                            <input type="text" class="form-control" id="field_of_study" name="field_of_study" placeholder="e.g. Computer Applications" required>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-success mt-3">
+                        <i class="bi bi-plus-circle"></i>
+                        Add Course
+                    </button>
+                </form>
+
+                <h6 class="fw-bold">Existing Courses</h6>
+                {% if courses %}
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle">
+                            <thead>
+                                <tr>
+                                    <th>Degree / Level</th>
+                                    <th>Course / Program</th>
+                                    <th>Field of Study</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for course in courses %}
+                                <tr>
+                                    <td>{{ course.degree_name }}</td>
+                                    <td>{{ course.course_name }}</td>
+                                    <td>{{ course.field_of_study }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <div class="alert alert-info mb-0">
+                        No courses have been added yet for this university.
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

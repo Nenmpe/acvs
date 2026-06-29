@@ -40,10 +40,10 @@ class UniversityScopedAdminMixin:
 class RoleUserAdmin(UniversityScopedAdminMixin, UserAdmin):
     role = None
     fieldsets = UserAdmin.fieldsets + (
-        ("University", {"fields": ("university",)}),
+        ("University", {"fields": ("university", "course")}),
     )
     add_fieldsets = UserAdmin.add_fieldsets + (
-        ("University", {"fields": ("university",)}),
+        ("University", {"fields": ("university", "course")}),
     )
     list_display = ("username", "email", "university", "is_staff", "is_active")
     list_filter = ("university", "is_staff", "is_active")
@@ -71,6 +71,10 @@ class RoleUserAdmin(UniversityScopedAdminMixin, UserAdmin):
         if db_field.name == "university" and self._is_university_admin(request):
             kwargs["queryset"] = db_field.remote_field.model.objects.filter(
                 id=request.user.university_id
+            )
+        if db_field.name == "course" and self._is_university_admin(request):
+            kwargs["queryset"] = db_field.remote_field.model.objects.filter(
+                university=request.user.university
             )
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
 

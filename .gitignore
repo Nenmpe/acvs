@@ -1,12 +1,29 @@
-.env
-
 # For Not Uploading The Generated PDF and QR images
 app/media/*
 app/staticfiles/*
 
-# # Ignore Django migration files
-# **/migrations/*.py
-# **/migrations/*.pyc
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyc
 
-# # But keep the migrations package
-# !**/migrations/__init__.py
+# Virtual environment
+venv/
+env/
+.venv/
+
+# Django
+db.sqlite3
+media/
+
+# Environment variables
+.env
+
+# IDE files
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db
