@@ -133,18 +133,19 @@ This starts two services:
 ## Local Development
 
 1. Clone the repository:
-   ```bash
+```bash
 git clone https://github.com/Nenmpe/acvs.git
 cd acvs
 ```
 2. Create and configure `.env`.
 3. Build and start Docker:
-   ```bash
+```bash
 docker-compose up --build
 ```
-4. Apply migrations and create a superuser:
-   ```bash
+4. Apply migrations, collectstatic and create a superuser:
+```bash
 docker exec -it acvs_web python manage.py migrate
+docker compose -it acvs_web python manage.py collectstatic --noinput
 docker exec -it acvs_web python manage.py createsuperuser
 ```
 5. Visit `http://localhost:8000`.
