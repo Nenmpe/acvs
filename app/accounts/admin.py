@@ -78,6 +78,12 @@ class RoleUserAdmin(UniversityScopedAdminMixin, UserAdmin):
             )
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
+    def formfield_for_dbfield(self, db_field, request, **kwargs):
+        formfield = super().formfield_for_dbfield(db_field, request, **kwargs)
+        if db_field.name == "email" and self.role in {"STUDENT", "VERIFIER"}:
+            formfield.required = True
+        return formfield
+
     def save_model(self, request, obj, form, change):
         obj.role = self.role
         if self._is_university_admin(request):

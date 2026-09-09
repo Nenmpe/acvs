@@ -30,6 +30,7 @@ class StudentCreationForm(forms.ModelForm):
         else:
             self.fields['course'].queryset = UniversityCourse.objects.none()
 
+        self.fields['email'].required = True
         self.fields['course'].label = 'Course / Degree'
         self.fields['course'].empty_label = 'Select a course'
 
@@ -80,6 +81,10 @@ class VerifierRegistrationForm(forms.ModelForm):
             'username': forms.TextInput(attrs={'class': 'form-control'}),
             'email': forms.EmailInput(attrs={'class': 'form-control'}),
         }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['email'].required = True
 
     def clean_password1(self):
         password1 = self.cleaned_data.get('password1')

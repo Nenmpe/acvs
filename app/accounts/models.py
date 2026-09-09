@@ -12,7 +12,7 @@ class User(AbstractUser):
         ('VERIFIER', 'Verifier'),
     )
 
-    email = models.EmailField(unique=True)
+    email = models.EmailField(unique=True, blank=True, null=True)
     role = models.CharField(max_length=30, choices=ROLE_CHOICES)
     university = models.ForeignKey(
         'universities.University',
